@@ -2,6 +2,7 @@ from flask import Flask, request, redirect, url_for, flash, session
 from flask import render_template
 from flask_session import Session
 from datetime import datetime, date
+import random
 
 from controllers.users import is_valid_creds
 from services.users import get_user_details_by_email, insert_user
@@ -96,8 +97,23 @@ def registerPage():
 def dash():
 	if not is_logged_in():
 		return redirect(url_for("loginPage"))
-	message = "Hello, World"
-	return render_template('dashboard.html', message=message);
+	
+	habits = get_uesrs_habit_with_progress(int(get_login_session()))
+
+	titles = []
+	percentages = []
+	backgrounds = []
+	for row in habits:
+		# row['percent'] = 
+		titles.append(row['title'])
+		percentages.append(round((row['completed_days'] / row['duration']) *100, 1))
+		
+		random_number = random.randint(0,16777215)
+		hex_number = str(hex(random_number))
+		hex_number ='#'+ hex_number[2:]
+		backgrounds.append(hex_number)
+
+	return render_template('dashboard.html', habits=habits, titles=titles, percentages=percentages, backgrounds=backgrounds);
 
 @app.route("/compare")
 def compare():
