@@ -6,6 +6,6 @@ def is_valid_creds(email, password):
       return False
    else:
     if(user["email"] == email and user['pass']==password):
-      return True
+      return user['id']
     else:
       return False
