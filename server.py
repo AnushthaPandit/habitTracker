@@ -1,10 +1,11 @@
-from flask import Flask, request, make_response, redirect, url_for, flash, session
+from flask import Flask, request, redirect, url_for, flash, session
 from flask import render_template
 from flask_session import Session
+from datetime import datetime, date
 
 from controllers.users import is_valid_creds
 from services.users import get_user_details_by_email, insert_user
-from services.habits import insert_habit, get_habits_by_user_id, delete_habit_by_id, get_habit_by_id, upadte_habit
+from services.habits import insert_habit, delete_habit_by_id, get_habit_by_id, upadte_habit, update_day_progress_complete_day, insert_day_progress, delete_day_progress_by_habit_id_user_id, get_progress_by_user_id_habit_id, get_habits_by_day_progress, get_users_by_habit_id, get_day_progress_by_user_id_habit_id_all
 
 # creates a Flask application
 app = Flask(__name__)
@@ -102,8 +103,9 @@ def dash():
 def compare():
 	if not is_logged_in():
 		return redirect(url_for("loginPage"))
-	message = "Hello, World"
-	return render_template('compare.html', message=message);
+	tasks = get_habits_by_day_progress(int(get_login_session()))
+
+	return render_template('compare.html', tasks=tasks);
 
 @app.route("/progress")
 def progress():
@@ -117,7 +119,8 @@ def tasks():
 	if not is_logged_in():
 		return redirect(url_for("loginPage"))
 	
-	tasks = get_habits_by_user_id(int(get_login_session()))
+	tasks = get_habits_by_day_progress(int(get_login_session()))
+
 	return render_template('tasks.html', tasks=tasks);
 
 @app.route("/add-new-task",  methods=('POST',))
@@ -129,7 +132,8 @@ def addNewTask():
 		title = request.form['title'].strip()
 		duration = request.form['duration'].strip()
 
-		insert_habit(title, int(duration), int(get_login_session()))
+		habit_id = insert_habit(title, int(duration), int(get_login_session()))
+		insert_day_progress(0, habit_id, int(get_login_session()))
 		return redirect(url_for("tasks"))
 			
 	else:
@@ -140,7 +144,14 @@ def deleteTask(habit_id):
 	if not is_logged_in():
 		return redirect(url_for("loginPage"))
 	
+	habit = get_habit_by_id(habit_id)
+
+	# must be an owner to delete the habit!
+	if habit['user_id'] != int(get_login_session()):
+		flash("You cannot delete the habit!!")
+		return redirect(url_for("tasks"))
 	
+	delete_day_progress_by_habit_id_user_id(habit_id)
 	delete_habit_by_id(habit_id)
 	return redirect(url_for("tasks"))
 
@@ -158,11 +169,86 @@ def getHabitDetails(habit_id):
 		title = request.form['title'].strip()
 		duration = request.form['duration'].strip()
 
-		upadte_habit(title, int(duration), habit_id)
-		return render_template('habit_details.html', habit=get_habit_by_id(habit_id));
+		day_progress = get_progress_by_user_id_habit_id(int(get_login_session()), habit_id)
+		
+		if day_progress['user_id'] != habit['user_id']:
+			flash("You cannot edit this!")
+			users = get_users_by_habit_id(habit_id, int(get_login_session()))
+			return render_template('habit_details.html', habit=get_habit_by_id(habit_id), day_progress=day_progress, users=users);
 
-	return render_template('habit_details.html', habit=habit);
-			
+		upadte_habit(title, int(duration), habit_id)
+		day_progress = get_progress_by_user_id_habit_id(int(get_login_session()), habit_id)
+		users = get_users_by_habit_id(habit_id, int(get_login_session()))
+		return render_template('habit_details.html', habit=get_habit_by_id(habit_id), day_progress=day_progress, users=users);
+
+	day_progress = get_progress_by_user_id_habit_id(int(get_login_session()), habit_id)
+	users = get_users_by_habit_id(habit_id, int(get_login_session()))
+	return render_template('habit_details.html', habit=habit, day_progress=day_progress, users=users);
+
+@app.route("/increment-habit-day/<int:habit_id>", methods=('GET',))
+def incrementHabitDay(habit_id):
+	if not is_logged_in():
+		return redirect(url_for("loginPage"))
+	
+	habit = get_habit_by_id(habit_id)
+	day_progress = get_progress_by_user_id_habit_id(int(get_login_session()), habit_id)
+
+	if habit == None:
+		return redirect(url_for("tasks"))
+	
+	if day_progress['updated_at'] == None:
+		update_day_progress_complete_day(day_progress['completed_days']+1, habit_id, int(get_login_session()))
+		return redirect("/habit_details/"+str(habit_id))
+	
+	updated_at = datetime.strptime(str(day_progress['updated_at']),  '%Y-%m-%d %H:%M:%S.%f');
+	current_date = date.today();
+
+	# if last marked day was today then do not let them mark
+	if updated_at.date() == current_date:
+		flash("You cannot mark a day as complete beacuse you have already marked a day today!")
+		return redirect("/habit_details/"+str(habit_id))
+	else:
+		update_day_progress_complete_day(day_progress['completed_days']+1, habit_id, int(get_login_session()))
+		return redirect("/habit_details/"+str(habit_id))
+
+
+@app.route("/habit_details/<int:habit_id>/invite", methods=('GET', 'POST'))
+def addFriend(habit_id):
+	if not is_logged_in():
+		return redirect(url_for("loginPage"))
+	
+	habit = get_habit_by_id(habit_id)
+	
+	if request.method == 'POST':
+
+		if habit['user_id'] != int(get_login_session()):
+			flash("You cannot invite friends because you are not the owner!", category="error")
+			return render_template('addfriend.html', habit=habit);
+
+		email = request.form['email'].strip()
+		user = get_user_details_by_email(email)
+
+		if(user == None):
+			flash("User with this email doesn't exists!", category="error")
+			return render_template('addfriend.html', habit=habit);
+
+	
+		users_day_progress = get_day_progress_by_user_id_habit_id_all(user['id'], habit_id)
+
+		if len(users_day_progress) > 0:
+			flash("This user is already a part of this habit!", category='error')
+			return render_template('addfriend.html', habit=habit);
+
+
+		insert_day_progress(0, habit_id, user['id'])
+		flash("User is added!", category='success')
+		return render_template('addfriend.html', habit=habit);
+
+	else:
+		return render_template('addfriend.html', habit=habit);
+
+	
+	
 
 
 # run the application

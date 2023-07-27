@@ -132,10 +132,3 @@ a:hover {
 .alert {
     color: red;
 }
-
-button {
-    padding: 7px 15px;
-    border-radius: 10px;
-    margin-top: 15px;
-    cursor: pointer;
-}

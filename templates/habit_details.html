@@ -1,11 +1,15 @@
-{% with title='Habits - Details| Habit Tracker' %} {% include "header.html" %}
+{% with title='Habits - Details | Habit Tracker' %} {% include "header.html" %}
 {% endwith %}
 
 <section class="main">
 	<div class="main-top">
-		<h1>Habit Details</h1>
+		<h1>{{habit['title']}} Details</h1>
 		<i class="fas fa-user-cog"></i>
 	</div>
+
+	{% for message in get_flashed_messages() %}
+	<div class="alert" style="color: red">{{ message }}</div>
+	{% endfor %}
 
 	<div class="main-skills">
 		<div class="card">
@@ -13,41 +17,30 @@
 				<div>
 					<h6>Edit Habit Details</h6>
 					<div class="mb-3 mt-3">
-						<input
-							type="text"
-							class="form-control"
-							id="title"
-							value="{{habit['title']}}"
-							placeholder="Enter a title"
-							name="title"
-							minlength="5"
-							maxlength="100"
-							required
-						/>
+						<input type="text" class="form-control" id="title" value="{{habit['title']}}"
+							placeholder="Enter a title" name="title" minlength="5" maxlength="100" required />
 					</div>
 					<div class="mb-3">
 						<div class="form-floating">
-							<select
-								id="duration"
-								name="duration"
-								value="{{habit['duration']}}"
-								class="form-select"
-								required
-							>
-								<option value="21" {{ 'selected' if habit['duration']== 21 else '' }}>21 days</option>
-								<option value="30" {{ 'selected' if habit['duration']== 30 else '' }}>For a month</option>
-								<option value="60" {{ 'selected' if habit['duration']== 60 else '' }}>2 months</option>
-								<option value="90" {{ 'selected' if habit['duration']== 90 else '' }}>3 months</option>
-								<option value="120" {{ 'selected' if habit['duration']== 120 else '' }}>4 months</option>
-								<option value="150" {{ 'selected' if habit['duration']== 150 else '' }}>5 months</option>
-								<option value="180" {{ 'selected' if habit['duration']== 180 else '' }}>6 months</option>
-								<option value="210" {{ 'selected' if habit['duration']== 210 else '' }}>7 months</option>
-								<option value="240" {{ 'selected' if habit['duration']== 240 else '' }}>8 months</option>
-								<option value="270" {{ 'selected' if habit['duration']== 270 else '' }}>9 months</option>
-								<option value="300" {{ 'selected' if habit['duration']== 300 else '' }}>10 months</option>
-								<option value="330" {{ 'selected' if habit['duration']== 330 else '' }}>11 months</option>
-								<option value="360" {{ 'selected' if habit['duration']== 360 else '' }}>A Year</option>
-								<option value="720" {{ 'selected' if habit['duration']== 720 else '' }}>2 Years</option>
+							<select id="duration" name="duration" value="{{habit['duration']}}" class="form-select"
+								required>
+								<option value="21" {{ 'selected' if habit['duration']==21 else '' }}>21 days</option>
+								<option value="30" {{ 'selected' if habit['duration']==30 else '' }}>For a month
+								</option>
+								<option value="60" {{ 'selected' if habit['duration']==60 else '' }}>2 months</option>
+								<option value="90" {{ 'selected' if habit['duration']==90 else '' }}>3 months</option>
+								<!-- <option value="120" {{ 'selected' if habit['duration']==120 else '' }}>4 months</option>
+                <option value="150" {{ 'selected' if habit['duration']==150 else '' }}>5 months</option>
+                <option value="180" {{ 'selected' if habit['duration']==180 else '' }}>6 months</option>
+                <option value="210" {{ 'selected' if habit['duration']==210 else '' }}>7 months</option>
+                <option value="240" {{ 'selected' if habit['duration']==240 else '' }}>8 months</option>
+                <option value="270" {{ 'selected' if habit['duration']==270 else '' }}>9 months</option>
+                <option value="300" {{ 'selected' if habit['duration']==300 else '' }}>10 months
+                </option>
+                <option value="330" {{ 'selected' if habit['duration']==330 else '' }}>11 months
+                </option>
+                <option value="360" {{ 'selected' if habit['duration']==360 else '' }}>A Year</option>
+                <option value="720" {{ 'selected' if habit['duration']==720 else '' }}>2 Years</option> -->
 							</select>
 							<label for="duration">Select Habit Duration</label>
 						</div>
@@ -56,10 +49,65 @@
 				<button type="submit" class="btn btn-primary">Save changes</button>
 			</form>
 		</div>
+
+		<div class="days-card-ctn">
+			<div class="days-card">
+				{% for n in range(1, habit['duration']+1) %}
+				{% if n <= day_progress['completed_days'] %} <button class="day-btn">
+					<i style="color: green;" class="fas fa-stop"></i>
+					<p>Day {{n}}</p>
+					</button>
+					{% else %}
+
+					<button data-n="{{n}}" data-hid="{{habit['id']}}" class="day-btn">
+						<i data-n="{{n}}" data-hid="{{habit['id']}}" class="far fa-square"></i>
+						<p data-n="{{n}}" data-hid="{{habit['id']}}">Day {{n}}</p>
+					</button>
+					{% endif %}
+					{% endfor %}
+			</div>
+			<p><i class="fas fa-info-circle"></i> Click on the day box to mark it complete</p>
+		</div>
 	</div>
 
 	<section class="main-course">
-		<h1></h1>
+		<h4>Friends</h4>
+		<div class="days-card-ctn" style="width: 350px;">
+			<ul class="list-group">
+
+				{% block content %} {% for user in users %}
+
+				<li class="list-group-item" style="text-align: left;">{{user.name}} ({{user.email}})</li>
+				{% endfor %} {% endblock %}
+
+			</ul>
+
+			<a href="/habit_details/{{habit['id']}}/invite" style="width: 50%;" class="btn btn-primary my-3">Add Friends</a>
+
+		</div>
 	</section>
 </section>
+<script>
+
+	const day_btns = document.getElementsByClassName("day-btn")
+
+	Array.from(day_btns).forEach(btn => {
+		btn.addEventListener("click", (ev) => {
+			const n = ev.target.dataset.n;
+			const hid = ev.target.dataset.hid;
+
+			if (!n) {
+				return;
+			}
+
+			if (!hid) {
+				return;
+			}
+
+			window.location.href = "/increment-habit-day/" + hid
+		})
+	})
+
+
+</script>
 {% include 'footer.html' %}

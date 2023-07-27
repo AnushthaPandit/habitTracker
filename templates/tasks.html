@@ -14,6 +14,9 @@
 		<button type="button" data-bs-toggle="modal" data-bs-target="#addtask">
 			<i class="fas fa-plus"></i>Add Habit!
 		</button>
+		{% for message in get_flashed_messages() %}
+		<div class="alert" style="color: red">{{ message }}</div>
+		{% endfor %}
 	</center>
 
 	<div class="main-skills">
@@ -23,13 +26,14 @@
 			<h3>{{task['title']}}</h3>
 			<p>{{task['completed_days']}}/{{task['duration']}} Days completed</p>
 			<button
+				class="button"
 				onclick="window.location.href
 				=`/habit_details/{{task['id']}}`"
 				style="background-color: green"
 			>
 				View Details
 			</button>
-			<button class="delete-btn" data-id="{{task['id']}}">
+			<button class="button delete-btn" data-id="{{task['id']}}">
 				Delete Progress
 			</button>
 		</div>
@@ -86,7 +90,7 @@
 								<option value="30">For a month</option>
 								<option value="60">2 months</option>
 								<option value="90">3 months</option>
-								<option value="120">4 months</option>
+								<!-- <option value="120">4 months</option>
 								<option value="150">5 months</option>
 								<option value="180">6 months</option>
 								<option value="210">7 months</option>
@@ -95,7 +99,7 @@
 								<option value="300">10 months</option>
 								<option value="330">11 months</option>
 								<option value="360">A Year</option>
-								<option value="720">2 Years</option>
+								<option value="720">2 Years</option> -->
 							</select>
 							<label for="duration">Select Habit Duration</label>
 						</div>
