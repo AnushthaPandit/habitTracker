@@ -4,7 +4,7 @@ from flask_session import Session
 
 from controllers.users import is_valid_creds
 from services.users import get_user_details_by_email, insert_user
-from services.habits import insert_habit, get_habits_by_user_id, delete_habit_by_id
+from services.habits import insert_habit, get_habits_by_user_id, delete_habit_by_id, get_habit_by_id, upadte_habit
 
 # creates a Flask application
 app = Flask(__name__)
@@ -143,6 +143,25 @@ def deleteTask(habit_id):
 	
 	delete_habit_by_id(habit_id)
 	return redirect(url_for("tasks"))
+
+@app.route("/habit_details/<int:habit_id>", methods=('GET', 'POST'))
+def getHabitDetails(habit_id):
+	if not is_logged_in():
+		return redirect(url_for("loginPage"))
+	
+	habit = get_habit_by_id(habit_id)
+
+	if habit == None:
+		return redirect(url_for("tasks"))
+	
+	if request.method == 'POST':
+		title = request.form['title'].strip()
+		duration = request.form['duration'].strip()
+
+		upadte_habit(title, int(duration), habit_id)
+		return render_template('habit_details.html', habit=get_habit_by_id(habit_id));
+
+	return render_template('habit_details.html', habit=habit);
 			
 
 

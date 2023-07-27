@@ -8,6 +8,13 @@ def insert_habit(title="", duration=0, user_id=0):
     (id, ) = habit if habit else None
     return id
 
+def upadte_habit(title="", duration=0, habit_id=0):
+    conn = dbconnection()
+    conn.execute("UPDATE habits SET title = ?, duration = ? WHERE id = ?",(title, duration, habit_id))
+    conn.commit()
+    conn.close()
+    return True
+
 def get_habits_by_user_id(user_id=0):
     conn = dbconnection()
     habits = conn.execute("select * from habits where user_id=?",(user_id,)).fetchall()
@@ -22,3 +29,9 @@ def delete_habit_by_id(id=0):
     conn.commit()
     conn.close()
     return True
+
+def get_habit_by_id(id=0):
+    conn = dbconnection()
+    habit = conn.execute("SELECT * FROM habits WHERE id = ?",(id,)).fetchone()
+    conn.close()
+    return habit

@@ -1,0 +1,65 @@
+{% with title='Habits - Details| Habit Tracker' %} {% include "header.html" %}
+{% endwith %}
+
+<section class="main">
+	<div class="main-top">
+		<h1>Habit Details</h1>
+		<i class="fas fa-user-cog"></i>
+	</div>
+
+	<div class="main-skills">
+		<div class="card">
+			<form action="/habit_details/{{habit['id']}}" method="post">
+				<div>
+					<h6>Edit Habit Details</h6>
+					<div class="mb-3 mt-3">
+						<input
+							type="text"
+							class="form-control"
+							id="title"
+							value="{{habit['title']}}"
+							placeholder="Enter a title"
+							name="title"
+							minlength="5"
+							maxlength="100"
+							required
+						/>
+					</div>
+					<div class="mb-3">
+						<div class="form-floating">
+							<select
+								id="duration"
+								name="duration"
+								value="{{habit['duration']}}"
+								class="form-select"
+								required
+							>
+								<option value="21" {{ 'selected' if habit['duration']== 21 else '' }}>21 days</option>
+								<option value="30" {{ 'selected' if habit['duration']== 30 else '' }}>For a month</option>
+								<option value="60" {{ 'selected' if habit['duration']== 60 else '' }}>2 months</option>
+								<option value="90" {{ 'selected' if habit['duration']== 90 else '' }}>3 months</option>
+								<option value="120" {{ 'selected' if habit['duration']== 120 else '' }}>4 months</option>
+								<option value="150" {{ 'selected' if habit['duration']== 150 else '' }}>5 months</option>
+								<option value="180" {{ 'selected' if habit['duration']== 180 else '' }}>6 months</option>
+								<option value="210" {{ 'selected' if habit['duration']== 210 else '' }}>7 months</option>
+								<option value="240" {{ 'selected' if habit['duration']== 240 else '' }}>8 months</option>
+								<option value="270" {{ 'selected' if habit['duration']== 270 else '' }}>9 months</option>
+								<option value="300" {{ 'selected' if habit['duration']== 300 else '' }}>10 months</option>
+								<option value="330" {{ 'selected' if habit['duration']== 330 else '' }}>11 months</option>
+								<option value="360" {{ 'selected' if habit['duration']== 360 else '' }}>A Year</option>
+								<option value="720" {{ 'selected' if habit['duration']== 720 else '' }}>2 Years</option>
+							</select>
+							<label for="duration">Select Habit Duration</label>
+						</div>
+					</div>
+				</div>
+				<button type="submit" class="btn btn-primary">Save changes</button>
+			</form>
+		</div>
+	</div>
+
+	<section class="main-course">
+		<h1></h1>
+	</section>
+</section>
+{% include 'footer.html' %}

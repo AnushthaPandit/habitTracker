@@ -21,8 +21,14 @@
 		<div class="card">
 			<i class="fas fa-tasks"></i>
 			<h3>{{task['title']}}</h3>
-			<p>Join Over 3 million Students.</p>
-			<button style="background-color: green">View Details</button>
+			<p>{{task['completed_days']}}/{{task['duration']}} Days completed</p>
+			<button
+				onclick="window.location.href
+				=`/habit_details/{{task['id']}}`"
+				style="background-color: green"
+			>
+				View Details
+			</button>
 			<button class="delete-btn" data-id="{{task['id']}}">
 				Delete Progress
 			</button>
