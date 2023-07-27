@@ -4,6 +4,7 @@ from flask_session import Session
 
 from controllers.users import is_valid_creds
 from services.users import get_user_details_by_email, insert_user
+from services.habits import insert_habit, get_habits_by_user_id, delete_habit_by_id
 
 # creates a Flask application
 app = Flask(__name__)
@@ -22,6 +23,9 @@ def is_logged_in():
 	
 def set_login_session(user_id):
 	session["user_id"] = user_id;
+
+def get_login_session():
+	return session["user_id"]
 
 
 @app.route("/")
@@ -113,8 +117,33 @@ def tasks():
 	if not is_logged_in():
 		return redirect(url_for("loginPage"))
 	
-	tasks =[{'title':"hello"}]
+	tasks = get_habits_by_user_id(int(get_login_session()))
 	return render_template('tasks.html', tasks=tasks);
+
+@app.route("/add-new-task",  methods=('POST',))
+def addNewTask():
+	if not is_logged_in():
+		return redirect(url_for("loginPage"))
+	
+	if request.method == 'POST':
+		title = request.form['title'].strip()
+		duration = request.form['duration'].strip()
+
+		insert_habit(title, int(duration), int(get_login_session()))
+		return redirect(url_for("tasks"))
+			
+	else:
+		return redirect(url_for("tasks"))
+	
+@app.route("/delete-task/<int:habit_id>")
+def deleteTask(habit_id):
+	if not is_logged_in():
+		return redirect(url_for("loginPage"))
+	
+	
+	delete_habit_by_id(habit_id)
+	return redirect(url_for("tasks"))
+			
 
 
 # run the application
