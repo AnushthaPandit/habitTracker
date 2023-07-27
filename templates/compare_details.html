@@ -1,0 +1,40 @@
+{% with title='Habits - Details | Habit Tracker' %} {% include "header.html" %}
+{% endwith %}
+
+<section class="main">
+	<div class="main-top">
+		<h1>{{habit['title']}} comparison</h1>
+		<i class="fas fa-user-cog"></i>
+	</div>
+
+	<div class="main-skills">
+		{% block content %} {% for i in range(users|length) %}
+		<div class="card text-center">
+			<div class="card-header">{{i+1}} Rank</div>
+			<div class="card-body">
+				<h5 class="card-title">{{users[i]['name']}}</h5>
+				<p class="card-text">{{users[i]['email']}}</p>
+				<button class="btn btn-primary">
+					{{users[i]['completed_days']}}/{{habit['duration']}} days
+				</button>
+			</div>
+			<div class="card-footer text-muted">
+				<div
+					class="progress"
+					role="progressbar"
+					aria-label="Success striped example"
+					aria-valuenow="25"
+					aria-valuemin="0"
+					aria-valuemax="100"
+				>
+					<div
+						class="progress-bar progress-bar-striped bg-success"
+						style="width: {{ ((users[i]['completed_days'] / habit['duration']) * 100) | round | int}}%"
+					></div>
+				</div>
+			</div>
+		</div>
+		{% endfor %} {% endblock %}
+	</div>
+</section>
+{% include 'footer.html' %}
