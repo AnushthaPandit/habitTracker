@@ -5,7 +5,7 @@ from datetime import datetime, date
 
 from controllers.users import is_valid_creds
 from services.users import get_user_details_by_email, insert_user
-from services.habits import insert_habit, delete_habit_by_id, get_habit_by_id, upadte_habit, update_day_progress_complete_day, insert_day_progress, delete_day_progress_by_habit_id_user_id, get_progress_by_user_id_habit_id, get_habits_by_day_progress, get_users_by_habit_id, get_day_progress_by_user_id_habit_id_all, get_day_progress_by_habit_id
+from services.habits import insert_habit, delete_habit_by_id, get_habit_by_id, upadte_habit, update_day_progress_complete_day, insert_day_progress, delete_day_progress_by_habit_id_user_id, get_progress_by_user_id_habit_id, get_habits_by_day_progress, get_users_by_habit_id, get_day_progress_by_user_id_habit_id_all, get_day_progress_by_habit_id, get_uesrs_habit_with_progress
 
 # creates a Flask application
 app = Flask(__name__)
@@ -120,8 +120,8 @@ def compare_de(habit_id):
 def progress():
 	if not is_logged_in():
 		return redirect(url_for("loginPage"))
-	message = "Hello, World"
-	return render_template('progress.html', message=message);
+	habits = get_uesrs_habit_with_progress(int(get_login_session()))
+	return render_template('progress.html', habits=habits);
 
 @app.route("/tasks")
 def tasks():

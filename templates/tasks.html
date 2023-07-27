@@ -11,7 +11,12 @@
 		{% if tasks|length == 0 %}
 		<h1>No Habit</h1>
 		{% endif %}
-		<button type="button" data-bs-toggle="modal" data-bs-target="#addtask">
+		<button
+			type="button"
+			class="btn btn-primary"
+			data-bs-toggle="modal"
+			data-bs-target="#addtask"
+		>
 			<i class="fas fa-plus"></i>Add Habit!
 		</button>
 		{% for message in get_flashed_messages() %}

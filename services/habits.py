@@ -101,3 +101,10 @@ def get_day_progress_by_habit_id(habit_id=0):
     conn.commit()
     conn.close()
     return habits
+
+def get_uesrs_habit_with_progress(user_id=0):
+    conn = dbconnection()
+    habits = conn.execute("select habits.title, habits.duration, day_progress.completed_days from day_progress inner join habits on habits.id=day_progress.habit_id where day_progress.user_id=? order by day_progress.completed_days desc",(user_id,)).fetchall()
+    conn.commit()
+    conn.close()
+    return habits
