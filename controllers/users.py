@@ -1,9 +1,11 @@
 from services.users import get_user_details_by_email
-from flask import make_response
 
 def is_valid_creds(email, password):
    user = get_user_details_by_email(email)
    if(user is None):
-      return True
+      return False
    else:
-    return True
+    if(user["email"] == email and user['pass']==password):
+      return True
+    else:
+      return False
