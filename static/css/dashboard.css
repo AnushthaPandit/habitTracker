@@ -3,6 +3,10 @@
   width: 100%;
 }
 
+.main-top h1 {
+  font-size: 1.5rem;
+}
+
 .main-top i {
   position: absolute;
   right: 0;
@@ -28,11 +32,12 @@
 
 .main-skills .card h3 {
   margin: 10px;
+  font-size: 1.2rem;
   text-transform: capitalize;
 }
 
 .main-skills .card p {
-  font-size: 12px;
+  font-size: 0.8rem;
 }
 
 .main-skills .card button {
@@ -49,7 +54,7 @@
 }
 
 .main-skills .card i {
-  font-size: 22px;
+  font-size: 1.4rem;
   padding: 10px;
 }
 
@@ -57,6 +62,10 @@
 .main-course {
   margin-top: 20px;
   text-transform: capitalize;
+}
+
+.main-course h1 {
+  font-size: 1.5rem;
 }
 
 .course-box {
@@ -98,14 +107,19 @@
   box-shadow: 0 20px 35px rgba(0, 0, 0, 0.1);
 }
 
+.box h3 {
+  font-size: 1rem;
+}
+
 .box p {
-  font-size: 12px;
+  font-size: 1rem;
   margin-top: 5px;
 }
 
 .box button {
   background: #000;
   color: #fff;
+  font-size: 0.8rem;
   padding: 7px 10px;
   border-radius: 10px;
   margin-top: 3rem;

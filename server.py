@@ -112,8 +112,9 @@ def progress():
 def tasks():
 	if not is_logged_in():
 		return redirect(url_for("loginPage"))
-	message = "Hello, World"
-	return render_template('tasks.html', message=message);
+	
+	tasks =[{'title':"hello"}]
+	return render_template('tasks.html', tasks=tasks);
 
 
 # run the application
