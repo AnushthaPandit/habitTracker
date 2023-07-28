@@ -70,22 +70,38 @@
 		</div>
 	</div>
 
-	<section class="main-course">
-		<h4>Friends</h4>
-		<div class="days-card-ctn" style="width: 350px;">
-			<ul class="list-group">
+	<div class="container">
+		<div class="row">
+			<div class="col-4">
+				<section class="main-course">
+					<h4>Friends</h4>
+					<div class="days-card-ctn" style="width: 350px;">
+						<ul class="list-group">
 
-				{% block content %} {% for user in users %}
+							{% block content %} {% for user in users %}
 
-				<li class="list-group-item" style="text-align: left;">{{user.name}} ({{user.email}})</li>
-				{% endfor %} {% endblock %}
+							<li class="list-group-item" style="text-align: left;">{{user.name}} ({{user.email}})</li>
+							{% endfor %} {% endblock %}
 
-			</ul>
+						</ul>
 
-			<a href="/habit_details/{{habit['id']}}/invite" style="width: 50%;" class="btn btn-primary my-3">Add Friends</a>
+						<a href="/habit_details/{{habit['id']}}/invite" style="width: 50%;"
+							class="btn btn-primary my-3">Add
+							Friends</a>
 
+					</div>
+				</section>
+			</div>
+			<div class="col">
+				<section class="main-course">
+					<h4>Pie Chart View Of Progress</h4>
+					<div class="days-card-ctn" style="width: 350px;">
+						<canvas id="piechart" style="width: 100%; max-width: 40vw"></canvas>
+					</div>
+				</section>
+			</div>
 		</div>
-	</section>
+	</div>
 </section>
 <script>
 
@@ -110,4 +126,28 @@
 
 
 </script>
+
+<script>
+	var percentage_completed = {{ ((day_progress['completed_days'] / habit['duration']) * 100) | round | int }}
+	var percentage_remains = 100 - percentage_completed;
+</script>
+
+<script>
+      var chrt = document.getElementById("piechart").getContext("2d");
+      var chartId = new Chart(chrt, {
+         type: 'pie',
+         data: {
+            labels: ["Completed", "Not Completed"],
+            datasets: [{
+               label: "Progress",
+               data: [percentage_completed, percentage_remains],
+               backgroundColor: ['green', 'red',],
+               hoverOffset: 5
+            }],
+         },
+         options: {
+            responsive: false,
+         },
+      });
+   </script>
 {% include 'footer.html' %}
