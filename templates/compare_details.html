@@ -1,13 +1,62 @@
 {% with title='Habits - Details | Habit Tracker' %} {% include "header.html" %}
 {% endwith %}
 
+<link rel="stylesheet" href="/static/css/compare_details.css" />
+
 <section class="main">
 	<div class="main-top">
-		<h1>{{habit['title']}} comparison</h1>
+		<h1>{{habit['title']}} Scoreboard</h1>
 		<i class="fas fa-user-cog"></i>
 	</div>
+	<div class="maincontainer">
+		<main>
+			<div id="header">
+				<h1>Scoreboard</h1>
+				<button class="share">
+					<i class="fas fa-trophy"></i>
+				</button>
+			</div>
+			<div id="leaderboard">
+				<div class="ribbon"></div>
+				<table>
+					{% block list %}
+					{% for i in range(users|length) %}
+					<tr>
+						<td class="number">{{i+1}}</td>
+						<td class="name">{{users[i]['name']}}</td>
+						<td class="points">
+							{{users[i]['completed_days']}}/{{habit['duration']}} Days
 
-	<div class="main-skills">
+							{% if i== 0 %}
+								<img class="gold-medal"
+											src="/static/img/gold-medal.png"
+											alt="gold medal" /> 
+							{% endif %}
+						</td>
+					</tr>
+					{% endfor %} {% endblock %}
+					<!-- <tr>
+						<td class="number">1</td>
+						<td class="name">Lee Taeyong</td>
+						<td class="points">
+							258.244
+							<img
+								class="gold-medal"
+								src="https://github.com/malunaridev/Challenges-iCodeThis/blob/master/4-leaderboard/assets/gold-medal.png?raw=true"
+								alt="gold medal"
+							/>
+						</td>
+					</tr> -->
+				</table>
+				<!-- <div id="buttons">
+				<button class="exit">Exit</button>
+				<button class="continue">Continue</button>
+			</div> -->
+			</div>
+		</main>
+	</div>
+
+	<!-- <div class="main-skills">
 		{% block content %} {% for i in range(users|length) %}
 		<div class="card text-center">
 			<div class="card-header">{{i+1}} Rank</div>
@@ -35,6 +84,6 @@
 			</div>
 		</div>
 		{% endfor %} {% endblock %}
-	</div>
+	</div> -->
 </section>
 {% include 'footer.html' %}
