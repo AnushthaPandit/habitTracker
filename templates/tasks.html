@@ -31,15 +31,14 @@
 			<h3>{{task['title']}}</h3>
 			<p>{{task['completed_days']}}/{{task['duration']}} Days completed</p>
 			<button
-				class="button"
+				class="my-3 btn btn-secondary"
 				onclick="window.location.href
 				=`/habit_details/{{task['id']}}`"
-				style="background-color: green"
 			>
 				View Details
 			</button>
-			<button class="button delete-btn" data-id="{{task['id']}}">
-				Delete Progress
+			<button class="btn btn-danger" data-id="{{task['id']}}">
+				Delete Habit
 			</button>
 		</div>
 		{% endfor %} {% endblock %}
