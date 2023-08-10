@@ -29,24 +29,12 @@
 								</option>
 								<option value="60" {{ 'selected' if habit['duration']==60 else '' }}>2 months</option>
 								<option value="90" {{ 'selected' if habit['duration']==90 else '' }}>3 months</option>
-								<!-- <option value="120" {{ 'selected' if habit['duration']==120 else '' }}>4 months</option>
-                <option value="150" {{ 'selected' if habit['duration']==150 else '' }}>5 months</option>
-                <option value="180" {{ 'selected' if habit['duration']==180 else '' }}>6 months</option>
-                <option value="210" {{ 'selected' if habit['duration']==210 else '' }}>7 months</option>
-                <option value="240" {{ 'selected' if habit['duration']==240 else '' }}>8 months</option>
-                <option value="270" {{ 'selected' if habit['duration']==270 else '' }}>9 months</option>
-                <option value="300" {{ 'selected' if habit['duration']==300 else '' }}>10 months
-                </option>
-                <option value="330" {{ 'selected' if habit['duration']==330 else '' }}>11 months
-                </option>
-                <option value="360" {{ 'selected' if habit['duration']==360 else '' }}>A Year</option>
-                <option value="720" {{ 'selected' if habit['duration']==720 else '' }}>2 Years</option> -->
 							</select>
 							<label for="duration">Select Habit Duration</label>
 						</div>
 					</div>
 				</div>
-				<button type="submit" class="btn btn-primary">Save changes</button>
+				<button type="submit" class="w-100 btn btn-primary">Save changes</button>
 			</form>
 		</div>
 
@@ -72,7 +60,7 @@
 
 	<div class="container">
 		<div class="row">
-			<div class="col-4">
+			<div class="col">
 				<section class="main-course">
 					<h4>Friends</h4>
 					<div class="days-card-ctn" style="width: 350px;">
@@ -86,7 +74,7 @@
 						</ul>
 
 						<a href="/habit_details/{{habit['id']}}/invite" style="width: 50%;"
-							class="btn btn-primary my-3">Add
+							class="btn btn-primary w-100 my-3">Add
 							Friends</a>
 
 					</div>
